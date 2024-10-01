@@ -14,17 +14,14 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Expose token (DO NOT DO THIS IN PRODUCTION!)
-      run: |
-        echo "GH_TOKEN: $(echo ${{ secrets.GITHUB_TOKEN }})"
-
     - name: Login to GitHub Container Registry
-      env:
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        echo "Debugging auth (DO NOT KEEP THIS IN PRODUCTION!)"
-        echo "GH_TOKEN: $GH_TOKEN"
-        echo "$GH_TOKEN" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+        echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+    - name: Debug - Show Docker config (NEVER DO THIS IN PRODUCTION!)
+      run: |
+        echo "Debugging Docker config:"
+        cat /home/runner/.docker/config.json
 
     - name: Build and push Docker image
       env:
@@ -38,4 +35,4 @@ jobs:
     - name: Verify deployment
       run: |
         echo "Verifying deployment..."
-        docker run --rm ghcr.io/joythedreamer/app/production-api:latest python -c "import os; print(f\"API Key status: {'set' if os.environ.get('API_KEY') else 'not set'}\")"
+        docker run --rm ghcr.io/${{ github.repository }}/production-api:latest python -c "import os; print(f\"API Key status: {'set' if os.environ.get('API_KEY') else 'not set'}\")"
