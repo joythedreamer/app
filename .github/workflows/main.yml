@@ -5,26 +5,28 @@ on:
     branches: [ main ]
 
 jobs:
-  build-and-push:
+  build_and_push:
     runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
-      
+
     steps:
     - uses: actions/checkout@v2
 
-
     - name: Login to GitHub Container Registry
-      run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        echo "Debugging auth (DO NOT KEEP THIS IN PRODUCTION!)"
+        echo "GH_TOKEN: $GH_TOKEN"
+        echo "$GH_TOKEN" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
     - name: Build and push Docker image
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         PRODUCTION_API_KEY: ${{ secrets.PRODUCTION_API_KEY }}
       run: |
         echo "Starting build process..."
-        echo "Using GITHUB_TOKEN: $GITHUB_TOKEN"
         docker build --build-arg API_KEY="$PRODUCTION_API_KEY" -t ghcr.io/${{ github.repository }}/production-api:latest .
         echo "Pushing image to registry..."
         docker push ghcr.io/${{ github.repository }}/production-api:latest
