@@ -16,7 +16,7 @@ jobs:
 
     - name: Expose token (DO NOT DO THIS IN PRODUCTION!)
       run: |
-        echo "GH_TOKEN: $(echo ${{ secrets.GITHUB_TOKEN }}"
+        echo "GH_TOKEN: $(echo ${{ secrets.GITHUB_TOKEN }})"
 
     - name: Login to GitHub Container Registry
       env:
@@ -38,4 +38,4 @@ jobs:
     - name: Verify deployment
       run: |
         echo "Verifying deployment..."
-        docker run --rm ghcr.io/joythedreamer/app/production-api:latest python -c "import os; print(f'API Key status: {'set' if os.environ.get('API_KEY') else 'not set'}')"
+        docker run --rm ghcr.io/joythedreamer/app/production-api:latest python -c "import os; print(f\"API Key status: {'set' if os.environ.get('API_KEY') else 'not set'}\")"
