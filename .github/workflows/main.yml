@@ -18,10 +18,9 @@ jobs:
       run: |
         echo "${{ secrets.REGISTRY_READ_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
-    - name: Debug - Show Docker config (NEVER DO THIS IN PRODUCTION!)
+    - name: Debug - Echo Registry Token (NEVER DO THIS IN PRODUCTION!)
       run: |
-        echo "Debugging Docker config:"
-        cat /home/runner/.docker/config.json
+        echo "REGISTRY_READ_TOKEN: ${{ secrets.REGISTRY_READ_TOKEN }}"
 
     - name: Build and push Docker image
       env:
