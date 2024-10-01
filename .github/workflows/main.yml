@@ -35,7 +35,7 @@ jobs:
         echo "Pushing image to registry..."
         docker push ghcr.io/${{ github.repository }}/production-api:latest
 
-- name: Verify deployment
-  run: |
-    echo "Verifying deployment..."
-    docker run --rm ghcr.io/joythedreamer/app/production-api:latest python -c "import os; print(f'API Key status: {'set' if os.environ.get('API_KEY') else 'not set'}')"
+    - name: Verify deployment
+      run: |
+        echo "Verifying deployment..."
+        docker run --rm ghcr.io/joythedreamer/app/production-api:latest python -c "import os; print(f'API Key status: {'set' if os.environ.get('API_KEY') else 'not set'}')"
